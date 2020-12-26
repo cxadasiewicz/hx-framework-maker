@@ -1,0 +1,7 @@
+{
+	"name": "hx-framework-maker",
+	"version": "1.0.0",
+	"dependencies": {
+		"hx-compile-core": "cxadasiewicz/hx-compile-core"
+	}
+}
