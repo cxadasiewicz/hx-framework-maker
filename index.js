@@ -3,6 +3,7 @@
 
 const FileLocations = require("./classes/file-locations");
 const FilesCopier = require("./classes/files-copier");
+const FilesMaker = require("./classes/files-maker");
 const FrameworkMaker = require("./classes/framework-maker");
 const IncludesCopier = require("./classes/includes-copier");
 const JSONStrings = require("./classes/json-strings");
@@ -18,6 +19,7 @@ module.exports = class HXFrameworkMaker {
 
 	static get FileLocations() { return FileLocations; }
 	static get FilesCopier() { return FilesCopier; }
+	static get FilesMaker() { return FilesMaker; }
 	static get FrameworkMaker() { return FrameworkMaker; }
 	static get IncludesCopier() { return IncludesCopier; }
 	static get JSONStrings() { return JSONStrings; }

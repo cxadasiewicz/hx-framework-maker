@@ -2,52 +2,36 @@
 "use strict";
 
 const FileLocations = require("./file-locations");
-const Maker = require("./maker");
+const FilesMaker = require("./files-maker");
 
 
-module.exports = class SassCompiler extends Maker {
+module.exports = class SassCompiler extends FilesMaker {
+
+	constructor(parentMaker) {
+		super(parentMaker, FileLocations.cssFolder);
+	}
 
 	// Getting paths
 
-	get sourcesInstallFolder() {
-		return this.frameworkInstallFolder + FileLocations.sourcesFolder + FileLocations.cssFolder;
-	}
-	get rootInstallPath() {
-		return this.sourcesInstallFolder + FileLocations.cssRootPath;
-	}
-	get publicInstallFolder() {
-		return this.frameworkPublicInstallFolder + FileLocations.cssFolder;
-	}
-	get publicInstallPath() {
-		return this.publicInstallFolder + this.frameworkName + FileLocations.cssPublicExtension;
-	}
-	get publicMinifiedInstallPath() {
-		return this.publicInstallFolder + this.frameworkName + FileLocations.cssPublicMinifiedExtension;
-	}
+	get rootInstallPath() { return this.sourcesInstallFolder + FileLocations.cssRootPath; }
+	get publicInstallPath() { return this.publicInstallFolder + this.frameworkName + FileLocations.cssPublicExtension; }
+	get publicMinifiedInstallPath() { return this.publicInstallFolder + this.frameworkName + FileLocations.cssPublicMinifiedExtension; }
 
 	// Configuring workspace tasks
 
-	get makeTaskName() {
-		return "make_" + this.frameworkName + "_css";
-	}
+	get makeTaskName() { return "make_" + this.frameworkName + "_css"; }
 
-	get processTaskName() {
-		return "process_" + this.frameworkName + "_css";
-	}
+	get processTaskName() { return "process_" + this.frameworkName + "_css"; }
 	get shellScriptToProcess() {
 		return ["sass" + " " + this.rootInstallPath + " " + this.publicInstallPath];
 	}
 
-	get postprocessTaskName() {
-		return "postprocess_" + this.frameworkName + "_css";
-	}
+	get postprocessTaskName() { return "postprocess_" + this.frameworkName + "_css"; }
 	get shellScriptToPostprocess() {
 		return ["postcss" + " " + this.publicInstallPath + " --replace --use autoprefixer"];
 	}
 
-	get optimizeTaskName() {
-		return "optimize_" + this.frameworkName + "_css";
-	}
+	get optimizeTaskName() { return "optimize_" + this.frameworkName + "_css"; }
 	get shellScriptToOptimize() {
 		return ["cleancss" + " " + this.publicInstallPath + " --output " + this.publicMinifiedInstallPath];
 	}

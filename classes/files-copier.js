@@ -2,28 +2,17 @@
 "use strict";
 
 const FileLocations = require("./file-locations");
+const FilesMaker = require("./files-maker");
 const JSONStrings = require("./json-strings");
-const Maker = require("./maker");
 const ShellScripting = require("./shell-scripting");
 
 
-module.exports = class FilesCopier extends Maker {
+module.exports = class FilesCopier extends FilesMaker {
 
-	constructor() {
-		super();
-		this.filesFolder = "";
-		this.filesManifestPath = "";
-		this.filesName = "";
+	constructor(parentMaker, filesName, filesManifestPath = FileLocations.copyManifestPath) {
+		super(parentMaker, filesName);
+		this.filesManifestPath = filesManifestPath;
 		this.installCopyPaths = {};
-	}
-
-	// Getting paths
-
-	get sourcesInstallFolder() {
-		return this.frameworkInstallFolder + FileLocations.sourcesFolder + this.filesFolder;
-	}
-	get publicInstallFolder() {
-		return this.frameworkPublicInstallFolder + this.filesFolder;
 	}
 
 	// Managing install copy paths
@@ -52,19 +41,17 @@ module.exports = class FilesCopier extends Maker {
 
 	// Configuring workspace tasks
 
-	get makeTaskName() {
-		return "make_" + this.frameworkName + "_" + this.filesName;
-	}
+	get makeTaskName() { return "make_" + this.frameworkName + "_" + this.filesName; }
 	get shellScriptToMake() {
 		let r = [];
 		const installCopyPathKeys = Object.keys(this.installCopyPaths);
 		if (installCopyPathKeys.length) {
-			r.push(ShellScripting.ensureFolder(this.publicInstallFolder));
+			r.push(ShellScripting.ensureDirectory(this.publicInstallFolder));
 			for (const sourcePath of installCopyPathKeys) {
 				const targetSpecParts = this.installCopyPaths[sourcePath].split(JSONStrings.fileSpecSeparator);
 				const targetFolder = targetSpecParts[0];
 				const targetFilename = (targetSpecParts.length > 1 ? targetSpecParts[1] : "");
-				r.push(ShellScripting.ensureFolder(targetFolder));
+				r.push(ShellScripting.ensureDirectory(targetFolder));
 				r.push(ShellScripting.copyFiles(sourcePath, targetFolder + targetFilename));
 			}
 		}
@@ -72,6 +59,7 @@ module.exports = class FilesCopier extends Maker {
 	}
 
 	configureWorkspaceToMake() {
+		this.collectInstallCopyPaths();
 		this.workspace.addShellTask(this.makeTaskName, this.shellScriptToMake);
 	}
 };

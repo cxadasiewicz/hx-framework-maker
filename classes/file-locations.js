@@ -6,6 +6,7 @@ module.exports = class FileLocations {
 
 	// Sources
 	static get sourcesFolder() { return "sources/"; }
+	static get copyManifestPath() { return "copy-paths.json"; }
 
 	// CSS
 	static get cssFolder() { return "css/"; }
@@ -14,10 +15,8 @@ module.exports = class FileLocations {
 	static get cssPublicMinifiedExtension() { return ".min" + this.cssPublicExtension; }
 
 	// Resources
-	static get resourcesFolder() { return "resources/"; }
-	static get resourcesManifestPath() { return "copy-paths.json"; }
+	static get resourcesPath() { return "resources"; }
 
 	// Includes
-	static get includesFolder() { return "includes/"; }
-	static get includesManifestPath() { return "copy-paths.json"; }
+	static get includesPath() { return "includes"; }
 };

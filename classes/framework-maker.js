@@ -9,23 +9,20 @@ const SassCompiler = require("./sass-compiler");
 
 module.exports = class FrameworkMaker extends Maker {
 
-	// Configuring workspace tasks
-
-	get makeTaskName() {
-		return "make_" + this.frameworkName;
+	constructor(workspace, product) {
+		super(workspace, product);
 	}
 
+	// Configuring workspace tasks
+
+	get makeTaskName() { return "make_" + this.frameworkName; }
+
 	configureWorkspaceToMake() {
-		const sassCompiler = new SassCompiler();
-		sassCompiler.setContextFrom(this);
+		const sassCompiler = new SassCompiler(this);
 		sassCompiler.configureWorkspaceToMake();
-		const resourcesCopier = new ResourcesCopier();
-		resourcesCopier.setContextFrom(this);
-		resourcesCopier.collectInstallCopyPaths();
+		const resourcesCopier = new ResourcesCopier(this);
 		resourcesCopier.configureWorkspaceToMake();
-		const includesCopier = new IncludesCopier();
-		includesCopier.setContextFrom(this);
-		includesCopier.collectInstallCopyPaths();
+		const includesCopier = new IncludesCopier(this);
 		includesCopier.configureWorkspaceToMake();
 		this.workspace.addCompoundTask(this.makeTaskName, [
 			sassCompiler.makeTaskName,
@@ -35,8 +32,7 @@ module.exports = class FrameworkMaker extends Maker {
 	}
 
 	static configureWorkspaceForProduct(workspace, product) {
-		const maker = new FrameworkMaker();
-		maker.setContext(workspace, product);
+		const maker = new FrameworkMaker(workspace, product);
 		maker.configureWorkspaceToMake();
 	}
 };
