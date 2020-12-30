@@ -1,21 +1,21 @@
 
 "use strict";
 
-const FileLocations = require("./file-locations");
 const FilesMaker = require("./files-maker");
+const ResourceIdentification = require("./resource-identification");
 
 
 module.exports = class SassCompiler extends FilesMaker {
 
 	constructor(parentMaker) {
-		super(parentMaker, FileLocations.cssFolder);
+		super(parentMaker, ResourceIdentification.cssFolder);
 	}
 
 	// Getting paths
 
-	get rootInstallPath() { return this.sourcesInstallFolder + FileLocations.cssRootPath; }
-	get publicInstallPath() { return this.publicInstallFolder + this.frameworkName + FileLocations.cssPublicExtension; }
-	get publicMinifiedInstallPath() { return this.publicInstallFolder + this.frameworkName + FileLocations.cssPublicMinifiedExtension; }
+	get rootInstallPath() { return this.sourcesInstallFolder + ResourceIdentification.cssRootPath; }
+	get publicInstallPath() { return this.publicInstallFolder + this.frameworkName + ResourceIdentification.cssPublicExtension; }
+	get publicMinifiedInstallPath() { return this.publicInstallFolder + this.frameworkName + ResourceIdentification.cssPublicMinifiedExtension; }
 
 	// Configuring workspace tasks
 

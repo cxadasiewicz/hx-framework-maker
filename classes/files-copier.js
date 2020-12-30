@@ -1,15 +1,14 @@
 
 "use strict";
 
-const FileLocations = require("./file-locations");
 const FilesMaker = require("./files-maker");
-const JSONStrings = require("./json-strings");
+const ResourceIdentification = require("./resource-identification");
 const ShellScripting = require("./shell-scripting");
 
 
 module.exports = class FilesCopier extends FilesMaker {
 
-	constructor(parentMaker, filesName, filesManifestPath = FileLocations.copyManifestPath) {
+	constructor(parentMaker, filesName, filesManifestPath = ResourceIdentification.copyManifestPath) {
 		super(parentMaker, filesName);
 		this.filesManifestPath = filesManifestPath;
 		this.installCopyPaths = {};
@@ -23,7 +22,7 @@ module.exports = class FilesCopier extends FilesMaker {
 			const copyPaths = this.workspace.tryReadingJSONAt(this.sourcesInstallFolder + manifestFolder + this.filesManifestPath);
 			for (const sourcePath of Object.keys(copyPaths)) {
 				const targetSpec = copyPaths[sourcePath];
-				if (targetSpec == JSONStrings.inheritedValue) {
+				if (targetSpec == ResourceIdentification.fileSpecInheritedValue) {
 					const subcopyPaths = this.readInstallCopyPathsAt(manifestFolder + sourcePath);
 					for (const subsourcePath of Object.keys(subcopyPaths)) {
 						r[subsourcePath] = subcopyPaths[subsourcePath];
@@ -48,7 +47,7 @@ module.exports = class FilesCopier extends FilesMaker {
 		if (installCopyPathKeys.length) {
 			r.push(ShellScripting.ensureDirectory(this.publicInstallFolder));
 			for (const sourcePath of installCopyPathKeys) {
-				const targetSpecParts = this.installCopyPaths[sourcePath].split(JSONStrings.fileSpecSeparator);
+				const targetSpecParts = this.installCopyPaths[sourcePath].split(ResourceIdentification.fileSpecSeparator);
 				const targetFolder = targetSpecParts[0];
 				const targetFilename = (targetSpecParts.length > 1 ? targetSpecParts[1] : "");
 				r.push(ShellScripting.ensureDirectory(targetFolder));

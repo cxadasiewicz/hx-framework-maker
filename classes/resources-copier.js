@@ -1,13 +1,13 @@
 
 "use strict";
 
-const FileLocations = require("./file-locations");
 const FilesCopier = require("./files-copier");
+const ResourceIdentification = require("./resource-identification");
 
 
 module.exports = class ResourcesCopier extends FilesCopier {
 
 	constructor(parentMaker) {
-		super(parentMaker, FileLocations.resourcesPath);
+		super(parentMaker, ResourceIdentification.resourcesPath);
 	}
 };

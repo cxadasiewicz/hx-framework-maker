@@ -2,7 +2,7 @@
 "use strict";
 
 
-module.exports = class FileLocations {
+module.exports = class ResourceIdentification {
 
 	// Sources
 	static get sourcesFolder() { return "sources/"; }
@@ -19,4 +19,8 @@ module.exports = class FileLocations {
 
 	// Includes
 	static get includesPath() { return "includes"; }
+
+	// File specifications
+	static get fileSpecSeparator() { return "|"; }
+	static get fileSpecInheritedValue() { return "inherit"; }
 };
