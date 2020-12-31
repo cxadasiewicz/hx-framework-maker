@@ -8,34 +8,33 @@ const ShellScripting = require("./shell-scripting");
 
 module.exports = class FilesCopier extends FilesMaker {
 
-	constructor(parentMaker, filesName, filesManifestPath = ResourceIdentification.copyManifestPath) {
-		super(parentMaker, filesName);
-		this.filesManifestPath = filesManifestPath;
-		this.installCopyPaths = {};
+	constructor(maker, filesName, manifestPath = ResourceIdentification.copyManifestPath) {
+		super(maker, filesName);
+		this.manifestPath = manifestPath;
+		this.copySpecs = {};
 	}
 
-	// Managing install copy paths
+	// Collecting copy specs
 
-	readInstallCopyPathsAt(manifestFolder = "") {
+	collectCopySpecsFromReadingManifestInFolder(manifestFolder = "") {
 		let r = {};
-		try {
-			const copyPaths = this.workspace.tryReadingJSONAt(this.sourcesInstallFolder + manifestFolder + this.filesManifestPath);
-			for (const sourcePath of Object.keys(copyPaths)) {
-				const targetSpec = copyPaths[sourcePath];
-				if (targetSpec == ResourceIdentification.fileSpecInheritedValue) {
-					const subcopyPaths = this.readInstallCopyPathsAt(manifestFolder + sourcePath);
-					for (const subsourcePath of Object.keys(subcopyPaths)) {
-						r[subsourcePath] = subcopyPaths[subsourcePath];
-					}
+		const manifestData = this.workspace.readJSONAt(this.sourcesInstallFolder + manifestFolder + this.manifestPath);
+		if (manifestData) {
+			for (const [sourcePath, destinationSpec] of Object.entries(manifestData)) {
+				if (destinationSpec != ResourceIdentification.fileSpecInheritedValue) {
+					r[this.sourcesInstallFolder + manifestFolder + sourcePath] = destinationSpec;
 				} else {
-					r[this.sourcesInstallFolder + manifestFolder + sourcePath] = this.publicInstallFolder + targetSpec;
+					for (const [subsourceInstallPath, subdestinationSpec] of Object.entries(this.collectCopySpecsFromReadingManifestInFolder(manifestFolder + sourcePath))) {
+						r[subsourceInstallPath] = subdestinationSpec;
+					}
 				}
 			}
-		} catch (e) { }
+		}
 		return r;
 	}
-	collectInstallCopyPaths() {
-		this.installCopyPaths = this.readInstallCopyPathsAt();
+
+	collectCopySpecs() {
+		this.copySpecs = this.collectCopySpecsFromReadingManifestInFolder();
 	}
 
 	// Configuring workspace tasks
@@ -43,22 +42,21 @@ module.exports = class FilesCopier extends FilesMaker {
 	get makeTaskName() { return "make_" + this.frameworkName + "_" + this.filesName; }
 	get shellScriptToMake() {
 		let r = [];
-		const installCopyPathKeys = Object.keys(this.installCopyPaths);
-		if (installCopyPathKeys.length) {
-			r.push(ShellScripting.ensureDirectory(this.publicInstallFolder));
-			for (const sourcePath of installCopyPathKeys) {
-				const targetSpecParts = this.installCopyPaths[sourcePath].split(ResourceIdentification.fileSpecSeparator);
-				const targetFolder = targetSpecParts[0];
-				const targetFilename = (targetSpecParts.length > 1 ? targetSpecParts[1] : "");
-				r.push(ShellScripting.ensureDirectory(targetFolder));
-				r.push(ShellScripting.copyFiles(sourcePath, targetFolder + targetFilename));
-			}
+		for (const [sourceInstallPath, destinationSpec] of Object.entries(this.copySpecs)) {
+			const destinationSpecParts = destinationSpec.split(ResourceIdentification.fileSpecSeparator);
+			const destinationInstallFolder = this.publicInstallFolder + destinationSpecParts[0];
+			const destinationSubpath = (destinationSpecParts.length > 1 ? destinationSpecParts[1] : "");
+			r.push(ShellScripting.copyToPathInFolderFromPath(
+				destinationInstallFolder + destinationSubpath,
+				destinationInstallFolder,
+				sourceInstallPath
+			));
 		}
 		return r;
 	}
 
 	configureWorkspaceToMake() {
-		this.collectInstallCopyPaths();
+		this.collectCopySpecs();
 		this.workspace.addShellTask(this.makeTaskName, this.shellScriptToMake);
 	}
 };

@@ -7,15 +7,15 @@ const ResourceIdentification = require("./resource-identification");
 
 module.exports = class SassCompiler extends FilesMaker {
 
-	constructor(parentMaker) {
-		super(parentMaker, ResourceIdentification.cssFolder);
+	constructor(maker) {
+		super(maker, ResourceIdentification.cssFolder);
 	}
 
 	// Getting paths
 
-	get rootInstallPath() { return this.sourcesInstallFolder + ResourceIdentification.cssRootPath; }
-	get publicInstallPath() { return this.publicInstallFolder + this.frameworkName + ResourceIdentification.cssPublicExtension; }
-	get publicMinifiedInstallPath() { return this.publicInstallFolder + this.frameworkName + ResourceIdentification.cssPublicMinifiedExtension; }
+	get rawInstallPath() { return this.sourcesInstallFolder + ResourceIdentification.cssRawPath; }
+	get finalInstallPath() { return this.publicInstallFolder + this.frameworkName + ResourceIdentification.cssFinalExtension; }
+	get finalMinifiedInstallPath() { return this.publicInstallFolder + this.frameworkName + ResourceIdentification.cssFinalMinifiedExtension; }
 
 	// Configuring workspace tasks
 
@@ -23,23 +23,24 @@ module.exports = class SassCompiler extends FilesMaker {
 
 	get processTaskName() { return "process_" + this.frameworkName + "_css"; }
 	get shellScriptToProcess() {
-		return ["sass" + " " + this.rootInstallPath + " " + this.publicInstallPath];
+		return ["sass" + " " + this.rawInstallPath + " " + this.finalInstallPath];
 	}
 
 	get postprocessTaskName() { return "postprocess_" + this.frameworkName + "_css"; }
 	get shellScriptToPostprocess() {
-		return ["postcss" + " " + this.publicInstallPath + " --replace --use autoprefixer"];
+		return ["postcss" + " " + this.finalInstallPath + " --replace --use autoprefixer"];
 	}
 
 	get optimizeTaskName() { return "optimize_" + this.frameworkName + "_css"; }
 	get shellScriptToOptimize() {
-		return ["cleancss" + " " + this.publicInstallPath + " --output " + this.publicMinifiedInstallPath];
+		return ["cleancss" + " " + this.finalInstallPath + " --output " + this.finalMinifiedInstallPath];
 	}
 
 	configureWorkspaceToMake() {
-		this.workspace.addShellTask(this.processTaskName, this.shellScriptToProcess);
-		this.workspace.addShellTask(this.postprocessTaskName, this.shellScriptToPostprocess);
-		this.workspace.addShellTask(this.optimizeTaskName, this.shellScriptToOptimize);
+		const hasRawData = (this.workspace.readJSONAt(this.rawInstallPath) != null);
+		this.workspace.addShellTask(this.processTaskName, (hasRawData ? this.shellScriptToProcess : []));
+		this.workspace.addShellTask(this.postprocessTaskName, (hasRawData ? this.shellScriptToPostprocess : []));
+		this.workspace.addShellTask(this.optimizeTaskName, (hasRawData ? this.shellScriptToOptimize : []));
 		this.workspace.addCompoundTask(this.makeTaskName, [
 			this.processTaskName,
 			this.postprocessTaskName,

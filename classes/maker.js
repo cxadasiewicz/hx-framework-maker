@@ -4,15 +4,15 @@
 
 module.exports = class Maker {
 
-	constructor(workspaceOrOther, product = null) {
+	constructor(workspaceOrMaker, product = null) {
 		let _workspace = null;
 		let _product = null;
 		if (product) {
-			_workspace = workspaceOrOther;
+			_workspace = workspaceOrMaker;
 			_product = product;
 		} else {
-			_workspace = workspaceOrOther.workspace;
-			_product = workspaceOrOther.product;
+			_workspace = workspaceOrMaker.workspace;
+			_product = workspaceOrMaker.product;
 		}
 		this.workspace = _workspace;
 		this.product = _product;

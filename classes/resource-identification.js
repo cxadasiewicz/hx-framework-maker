@@ -10,9 +10,9 @@ module.exports = class ResourceIdentification {
 
 	// CSS
 	static get cssFolder() { return "css/"; }
-	static get cssRootPath() { return "styles.scss"; }
-	static get cssPublicExtension() { return ".css"; }
-	static get cssPublicMinifiedExtension() { return ".min" + this.cssPublicExtension; }
+	static get cssRawPath() { return "styles.scss"; }
+	static get cssFinalExtension() { return ".css"; }
+	static get cssFinalMinifiedExtension() { return ".min" + this.cssFinalExtension; }
 
 	// Resources
 	static get resourcesPath() { return "resources"; }

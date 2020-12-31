@@ -7,8 +7,8 @@ const ResourceIdentification = require("./resource-identification");
 
 module.exports = class FilesMaker extends Maker {
 
-	constructor(parentMaker, filesName) {
-		super(parentMaker);
+	constructor(maker, filesName) {
+		super(maker);
 		this.filesName = filesName;
 	}
 
