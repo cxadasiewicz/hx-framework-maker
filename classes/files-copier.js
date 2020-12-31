@@ -21,7 +21,7 @@ module.exports = class FilesCopier extends FilesMaker {
 		const manifestData = this.workspace.readJSONAt(this.sourcesInstallFolder + manifestFolder + this.manifestPath);
 		if (manifestData) {
 			for (const [sourcePath, destinationSpec] of Object.entries(manifestData)) {
-				if (destinationSpec != ResourceIdentification.fileSpecInheritedValue) {
+				if (destinationSpec != ResourceIdentification.fileSpecInheritOption) {
 					r[this.sourcesInstallFolder + manifestFolder + sourcePath] = destinationSpec;
 				} else {
 					for (const [subsourceInstallPath, subdestinationSpec] of Object.entries(this.collectCopySpecsFromReadingManifestInFolder(manifestFolder + sourcePath))) {

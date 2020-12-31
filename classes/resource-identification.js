@@ -22,5 +22,5 @@ module.exports = class ResourceIdentification {
 
 	// File specifications
 	static get fileSpecSeparator() { return "|"; }
-	static get fileSpecInheritedValue() { return "inherit"; }
+	static get fileSpecInheritOption() { return "inherit"; }
 };
