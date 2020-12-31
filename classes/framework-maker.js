@@ -30,9 +30,4 @@ module.exports = class FrameworkMaker extends Maker {
 			includesCopier.makeTaskName
 		]);
 	}
-
-	static configureWorkspaceForProduct(workspace, product) {
-		const maker = new FrameworkMaker(workspace, product);
-		maker.configureWorkspaceToMake();
-	}
 };

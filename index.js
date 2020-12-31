@@ -27,6 +27,6 @@ module.exports = class HXFrameworkMaker {
 	static get ShellScripting() { return ShellScripting; }
 
 	static configureWorkspaceForProduct(workspace, product) {
-		FrameworkMaker.configureWorkspaceForProduct(workspace, product);
+		new FrameworkMaker(workspace, product).configureWorkspaceToMake();
 	}
 }
