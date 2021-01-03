@@ -7,7 +7,7 @@ const ResourceIdentification = require("./resource-identification");
 
 module.exports = class ResourcesCopier extends FilesCopier {
 
-	constructor(maker) {
-		super(maker, ResourceIdentification.resourcesPath);
+	constructor(operation) {
+		super(operation, ResourceIdentification.resourcesPath);
 	}
 };

@@ -2,12 +2,12 @@
 "use strict";
 
 const IncludesCopier = require("./includes-copier");
-const Maker = require("./maker");
+const MakeOperation = require("./make-operation");
 const ResourcesCopier = require("./resources-copier");
 const SassCompiler = require("./sass-compiler");
 
 
-module.exports = class FrameworkMaker extends Maker {
+module.exports = class FrameworkAssembler extends MakeOperation {
 
 	constructor(workspace, product) {
 		super(workspace, product);
@@ -24,7 +24,7 @@ module.exports = class FrameworkMaker extends Maker {
 		resourcesCopier.configureWorkspaceToMake();
 		const includesCopier = new IncludesCopier(this);
 		includesCopier.configureWorkspaceToMake();
-		this.workspace.addCompoundTask(this.makeTaskName, [
+		this.workspace.defineTaskWithNameAndSubtasks(this.makeTaskName, [
 			sassCompiler.makeTaskName,
 			resourcesCopier.makeTaskName,
 			includesCopier.makeTaskName

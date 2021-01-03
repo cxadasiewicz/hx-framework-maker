@@ -2,17 +2,17 @@
 "use strict";
 
 
-module.exports = class Maker {
+module.exports = class MakeOperation {
 
-	constructor(workspaceOrMaker, product = null) {
+	constructor(workspaceOrOperation, product = null) {
 		let _workspace = null;
 		let _product = null;
 		if (product) {
-			_workspace = workspaceOrMaker;
+			_workspace = workspaceOrOperation;
 			_product = product;
 		} else {
-			_workspace = workspaceOrMaker.workspace;
-			_product = workspaceOrMaker.product;
+			_workspace = workspaceOrOperation.workspace;
+			_product = workspaceOrOperation.product;
 		}
 		this.workspace = _workspace;
 		this.product = _product;

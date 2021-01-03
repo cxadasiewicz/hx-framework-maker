@@ -1,14 +1,14 @@
 
 "use strict";
 
-const Maker = require("./maker");
+const MakeOperation = require("./make-operation");
 const ResourceIdentification = require("./resource-identification");
 
 
-module.exports = class FilesMaker extends Maker {
+module.exports = class FilesOperation extends MakeOperation {
 
-	constructor(maker, filesName) {
-		super(maker);
+	constructor(operation, filesName) {
+		super(operation);
 		this.filesName = filesName;
 	}
 

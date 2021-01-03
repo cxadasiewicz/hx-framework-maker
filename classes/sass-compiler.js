@@ -1,14 +1,14 @@
 
 "use strict";
 
-const FilesMaker = require("./files-maker");
+const FilesOperation = require("./files-operation");
 const ResourceIdentification = require("./resource-identification");
 
 
-module.exports = class SassCompiler extends FilesMaker {
+module.exports = class SassCompiler extends FilesOperation {
 
-	constructor(maker) {
-		super(maker, ResourceIdentification.cssFolder);
+	constructor(operation) {
+		super(operation, ResourceIdentification.cssFolder);
 	}
 
 	// Getting paths
@@ -37,11 +37,11 @@ module.exports = class SassCompiler extends FilesMaker {
 	}
 
 	configureWorkspaceToMake() {
-		const hasRawData = (this.workspace.readJSONAt(this.rawInstallPath) != null);
-		this.workspace.addShellTask(this.processTaskName, (hasRawData ? this.shellScriptToProcess : []));
-		this.workspace.addShellTask(this.postprocessTaskName, (hasRawData ? this.shellScriptToPostprocess : []));
-		this.workspace.addShellTask(this.optimizeTaskName, (hasRawData ? this.shellScriptToOptimize : []));
-		this.workspace.addCompoundTask(this.makeTaskName, [
+		const hasRawData = (this.workspace.readJSONFileAt(this.rawInstallPath) != null);
+		this.workspace.defineTaskWithNameAndScript(this.processTaskName, (hasRawData ? this.shellScriptToProcess : []));
+		this.workspace.defineTaskWithNameAndScript(this.postprocessTaskName, (hasRawData ? this.shellScriptToPostprocess : []));
+		this.workspace.defineTaskWithNameAndScript(this.optimizeTaskName, (hasRawData ? this.shellScriptToOptimize : []));
+		this.workspace.defineTaskWithNameAndSubtasks(this.makeTaskName, [
 			this.processTaskName,
 			this.postprocessTaskName,
 			this.optimizeTaskName

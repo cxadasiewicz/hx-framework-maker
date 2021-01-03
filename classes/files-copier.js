@@ -1,15 +1,15 @@
 
 "use strict";
 
-const FilesMaker = require("./files-maker");
+const FilesOperation = require("./files-operation");
 const ResourceIdentification = require("./resource-identification");
 const ShellScripting = require("./shell-scripting");
 
 
-module.exports = class FilesCopier extends FilesMaker {
+module.exports = class FilesCopier extends FilesOperation {
 
-	constructor(maker, filesName, manifestPath = ResourceIdentification.copyManifestPath) {
-		super(maker, filesName);
+	constructor(operation, filesName, manifestPath = ResourceIdentification.copyManifestPath) {
+		super(operation, filesName);
 		this.manifestPath = manifestPath;
 	}
 
@@ -17,7 +17,7 @@ module.exports = class FilesCopier extends FilesMaker {
 
 	discoverCopySpecsFromManifestInFolder(manifestFolder = "") {
 		let r = {};
-		const manifestData = this.workspace.readJSONAt(this.sourcesInstallFolder + manifestFolder + this.manifestPath);
+		const manifestData = this.workspace.readJSONFileAt(this.sourcesInstallFolder + manifestFolder + this.manifestPath);
 		if (manifestData) {
 			for (const [sourcePath, destinationSpec] of Object.entries(manifestData)) {
 				if (destinationSpec != ResourceIdentification.fileSpecInheritOption) {
@@ -55,6 +55,6 @@ module.exports = class FilesCopier extends FilesMaker {
 	}
 
 	configureWorkspaceToMake() {
-		this.workspace.addShellTask(this.makeTaskName, this.shellScriptToMake);
+		this.workspace.defineTaskWithNameAndScript(this.makeTaskName, this.shellScriptToMake);
 	}
 };
