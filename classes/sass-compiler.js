@@ -37,10 +37,9 @@ module.exports = class SassCompiler extends FilesOperation {
 	}
 
 	configureWorkspaceToMake() {
-		const hasRawData = (this.workspace.readJSONFileAt(this.rawInstallPath) != null);
-		this.workspace.defineTaskWithNameAndScript(this.processTaskName, (hasRawData ? this.shellScriptToProcess : []));
-		this.workspace.defineTaskWithNameAndScript(this.postprocessTaskName, (hasRawData ? this.shellScriptToPostprocess : []));
-		this.workspace.defineTaskWithNameAndScript(this.optimizeTaskName, (hasRawData ? this.shellScriptToOptimize : []));
+		this.workspace.defineTaskWithNameAndScript(this.processTaskName, this.shellScriptToProcess);
+		this.workspace.defineTaskWithNameAndScript(this.postprocessTaskName, this.shellScriptToPostprocess);
+		this.workspace.defineTaskWithNameAndScript(this.optimizeTaskName, this.shellScriptToOptimize);
 		this.workspace.defineTaskWithNameAndSubtasks(this.makeTaskName, [
 			this.processTaskName,
 			this.postprocessTaskName,
