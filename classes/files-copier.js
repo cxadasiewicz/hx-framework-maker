@@ -45,7 +45,7 @@ module.exports = class FilesCopier extends FilesOperation {
 			const destinationSpecParts = destinationSpec.split(ResourceIdentification.fileSpecSeparator);
 			const destinationInstallFolder = this.publicInstallFolder + destinationSpecParts[0];
 			const destinationSubpath = (destinationSpecParts.length > 1 ? destinationSpecParts[1] : "");
-			r.push(ShellScripting.copyToPathInFolderFromPath(
+			r = r.concat(ShellScripting.copyToPathInFolderFromPath(
 				destinationInstallFolder + destinationSubpath,
 				destinationInstallFolder,
 				sourceInstallPath
